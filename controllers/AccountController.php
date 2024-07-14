@@ -17,9 +17,21 @@ class AccountController {
 
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = json_decode(file_get_contents("php://input"));
-            $this->account->user_id = $data->user_id;
-            $this->account->balance = $data->balance;
+            $balance = $_POST['balance'] ?? null;
+            $this->account->balance = $balance;
+
+            if (isset($_SESSION['user_id'])) {
+                $this->account->user_id = $_SESSION['user_id'];
+            } else {
+                $data = json_decode(file_get_contents("php://input"));
+                $this->account->user_id = $data->user_id ?? null;
+            }
+
+            if ($this->account->user_id === null) {
+                http_response_code(400);
+                echo json_encode(['message' => 'User ID is required.']);
+                return;
+            }
 
             try {
                 if ($this->account->create()) {
