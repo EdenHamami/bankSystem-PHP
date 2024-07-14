@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start session
+session_start();
 
 include_once '../config/database.php';
 include_once '../models/Account.php';

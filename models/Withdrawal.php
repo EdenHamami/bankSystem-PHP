@@ -13,7 +13,7 @@ class Withdrawal {
     }
 
     // Create a new withdrawal
-    public function createWithdrawal() {
+    public function create() {
         // Start transaction
         $this->conn->beginTransaction();
 

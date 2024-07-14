@@ -14,7 +14,7 @@ class Transfer {
     }
 
     // Create a new transfer
-    public function createTransfer() {
+    public function create() {
         // Start transaction
         $this->conn->beginTransaction();
 

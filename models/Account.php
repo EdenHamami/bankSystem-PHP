@@ -70,36 +70,29 @@ class Account {
     // Update account balance
     public function updateBalance($account_id, $new_balance) {
         try {
-            // Start transaction
             $this->conn->beginTransaction();
 
-            // Lock the account row
             $query = "SELECT balance FROM " . $this->table . " WHERE account_id = :account_id FOR UPDATE";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':account_id', $account_id);
             $stmt->execute();
 
-            // Get the current balance
             $account = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($account) {
-                // Update the balance
                 $query = "UPDATE " . $this->table . " SET balance = :balance WHERE account_id = :account_id";
                 $stmt = $this->conn->prepare($query);
                 $stmt->bindParam(':balance', $new_balance);
                 $stmt->bindParam(':account_id', $account_id);
 
                 if ($stmt->execute()) {
-                    // Commit the transaction
                     $this->conn->commit();
                     return true;
                 }
             }
 
-            // Rollback the transaction if something failed
             $this->conn->rollBack();
             return false;
         } catch (PDOException $e) {
-            // Rollback the transaction if an error occurred
             $this->conn->rollBack();
             throw new Exception("Error updating balance: " . $e->getMessage());
         }
@@ -120,7 +113,6 @@ class Account {
 
     // Get all transactions for an account
     public function getTransactions($account_id) {
-        // Example implementation - should be customized based on your schema
         $query = "
             SELECT * FROM transfers WHERE from_account_id = :account_id
             UNION ALL

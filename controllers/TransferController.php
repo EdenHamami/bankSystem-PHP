@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start session
+
 include_once '../config/database.php';
 include_once '../models/Transfer.php';
 include_once '../models/Account.php';
@@ -16,25 +18,48 @@ class TransferController {
         $this->transfer = new Transfer($this->db);
     }
 
-    // Function to handle creating a new transfer
-    public function createTransfer() {
+    // Create a new transfer
+    public function create() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = json_decode(file_get_contents("php://input"));
-            $this->transfer->from_account_id = $data->from_account_id;
-            $this->transfer->to_account_id = $data->to_account_id;
-            $this->transfer->amount = $data->amount;
+            if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
+                // Handling form submission
+                $this->transfer->from_account_id = $_POST['from_account_id'];
+                $this->transfer->to_account_id = $_POST['to_account_id'];
+                $this->transfer->amount = $_POST['amount'];
+            } else {
+                // Handling JSON request
+                $data = json_decode(file_get_contents("php://input"));
+                $this->transfer->from_account_id = $data->from_account_id;
+                $this->transfer->to_account_id = $data->to_account_id;
+                $this->transfer->amount = $data->amount;
+            }
 
             try {
-                if ($this->transfer->createTransfer()) {
-                    http_response_code(201);
-                    echo json_encode(['message' => 'Transfer created successfully.']);
+                if ($this->transfer->create()) {
+                    if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
+                        header('Location: ../views/dashboard.php?success=Transfer successful.');
+                        exit();
+                    } else {
+                        http_response_code(201);
+                        echo json_encode(['message' => 'Transfer created successfully.']);
+                    }
                 } else {
-                    http_response_code(400);
-                    echo json_encode(['message' => 'Transfer creation failed.']);
+                    if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
+                        header('Location: ../views/transfer.php?error=Transfer failed.');
+                        exit();
+                    } else {
+                        http_response_code(400);
+                        echo json_encode(['message' => 'Transfer creation failed.']);
+                    }
                 }
             } catch (Exception $e) {
-                http_response_code(400);
-                echo json_encode(['message' => $e->getMessage()]);
+                if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
+                    header('Location: ../views/transfer.php?error=' . urlencode($e->getMessage()));
+                    exit();
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['message' => $e->getMessage()]);
+                }
             }
         } else {
             http_response_code(405);
@@ -46,12 +71,11 @@ class TransferController {
 // Instantiate the TransferController
 $controller = new TransferController();
 
-// Determine the action based on the request
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'create':
-        $controller->createTransfer();
+        $controller->create();
         break;
     default:
         http_response_code(404);

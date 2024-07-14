@@ -13,7 +13,7 @@ class Deposit {
     }
 
     // Create a new deposit
-    public function createDeposit() {
+    public function create() {
         // Start transaction
         $this->conn->beginTransaction();
 

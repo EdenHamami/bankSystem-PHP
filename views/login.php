@@ -7,7 +7,7 @@
 <body>
     <div class="container">
         <h2>Login</h2>
-        <form method="POST" action="../controllers/UserController.php?action=loginUser">
+        <form method="POST" action="../controllers/UserController.php?action=login">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <br>
@@ -19,5 +19,11 @@
         <br>
         <a href="../controllers/UserController.php?action=showRegister">Register</a>
     </div>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="error">
+            <?php echo htmlspecialchars($_GET['error']); ?>
+        </div>
+    <?php endif; ?>
 </body>
 </html>

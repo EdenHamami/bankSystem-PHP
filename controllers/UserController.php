@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start session
+session_start();
 
 include_once '../config/database.php';
 include_once '../models/User.php';
@@ -15,7 +15,7 @@ class UserController {
     }
 
     // Create a new user
-    public function create() {
+    public function register() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->user->name = $_POST['name'];
             $this->user->email = $_POST['email'];
@@ -23,20 +23,20 @@ class UserController {
 
             try {
                 if ($this->user->create()) {
-                    http_response_code(201);
-                    echo json_encode(['message' => 'User created successfully.']);
+                    header('Location: ../views/login.php?success=Registration successful. Please login.');
+                    exit();
                 } else {
                     if (!$this->user->isEmailUnique()) {
-                        http_response_code(409);
-                        echo json_encode(['message' => 'User creation failed. Email already exists.']);
+                        header('Location: ../views/register.php?error=Email already exists.');
+                        exit();
                     } else {
-                        http_response_code(400);
-                        echo json_encode(['message' => 'User creation failed.']);
+                        header('Location: ../views/register.php?error=Registration failed.');
+                        exit();
                     }
                 }
             } catch (Exception $e) {
-                http_response_code(400);
-                echo json_encode(['message' => $e->getMessage()]);
+                header('Location: ../views/register.php?error=' . urlencode($e->getMessage()));
+                exit();
             }
         } else {
             http_response_code(405);
@@ -52,11 +52,13 @@ class UserController {
 
             $user_data = $this->user->getByEmail($email);
             if ($user_data && $this->user->verifyPassword($email, $password)) {
-                $_SESSION['user_id'] = $user_data['user_id']; // Save user_id in session
-                header('Location: ../views/accounts.php');
+                $_SESSION['user_id'] = $user_data['user_id'];
+                $_SESSION['user_name'] = $user_data['name'];
+                header('Location: ../views/dashboard.php');
                 exit();
             } else {
-                echo "Invalid email or password.";
+                header('Location: ../views/login.php?error=Invalid email or password.');
+                exit();
             }
         } else {
             http_response_code(405);
@@ -170,7 +172,7 @@ $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'create':
-        $controller->create();
+        $controller->register();
         break;
     case 'login':
         $controller->login();
