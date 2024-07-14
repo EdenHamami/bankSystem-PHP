@@ -143,6 +143,29 @@ class AccountController {
             echo json_encode(['message' => 'Invalid request method.']);
         }
     }
+
+    // Function to handle getting all transactions for an account
+    public function getAccountTransactions() {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $account_id = $_GET['account_id'] ?? null;
+            if ($account_id) {
+                $transactions = $this->account->getAccountTransactions($account_id);
+                if ($transactions) {
+                    http_response_code(200);
+                    echo json_encode($transactions);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(['message' => 'No transactions found for this account.']);
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(['message' => 'Account ID is required.']);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(['message' => 'Invalid request method.']);
+        }
+    }
 }
 
 // Instantiate the AccountController
@@ -169,6 +192,9 @@ switch ($action) {
         break;
     case 'delete':
         $controller->deleteAccount();
+        break;
+    case 'getTransactions':
+        $controller->getAccountTransactions();
         break;
     default:
         http_response_code(404);

@@ -73,29 +73,29 @@ class Account {
         try {
             // Start transaction
             $this->conn->beginTransaction();
-    
+
             // Lock the account row
             $query = "SELECT balance FROM " . $this->table . " WHERE account_id = :account_id FOR UPDATE";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':account_id', $account_id);
             $stmt->execute();
-    
+
             // Get the current balance
             $account = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($account) {
-                // Update the balance
+                // Update the balance to the new balance
                 $query = "UPDATE " . $this->table . " SET balance = :balance WHERE account_id = :account_id";
                 $stmt = $this->conn->prepare($query);
                 $stmt->bindParam(':balance', $new_balance);
                 $stmt->bindParam(':account_id', $account_id);
-    
+
                 if ($stmt->execute()) {
                     // Commit the transaction
                     $this->conn->commit();
                     return true;
                 }
             }
-    
+
             // Rollback the transaction if something failed
             $this->conn->rollBack();
             return false;
@@ -105,7 +105,6 @@ class Account {
             throw new Exception("Error updating balance: " . $e->getMessage());
         }
     }
-    
 
     // Delete account by ID
     public function deleteAccount($account_id) {
@@ -118,6 +117,33 @@ class Account {
             return true;
         }
         return false;
+    }
+
+    // Get all transactions for an account
+    public function getAccountTransactions($account_id) {
+        $query = "
+            SELECT 'deposit' as type, amount, timestamp 
+            FROM deposits 
+            WHERE account_id = :account_id
+            UNION ALL
+            SELECT 'withdrawal' as type, amount, timestamp 
+            FROM withdrawals 
+            WHERE account_id = :account_id
+            UNION ALL
+            SELECT 'transfer_out' as type, amount, timestamp 
+            FROM transfers 
+            WHERE from_account_id = :account_id
+            UNION ALL
+            SELECT 'transfer_in' as type, amount, timestamp 
+            FROM transfers 
+            WHERE to_account_id = :account_id
+            ORDER BY timestamp DESC
+        ";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':account_id', $account_id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>
