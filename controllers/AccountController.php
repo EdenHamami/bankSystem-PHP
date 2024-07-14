@@ -15,14 +15,14 @@ class AccountController {
         $this->account = new Account($this->db);
     }
 
-    public function createAccount() {
+    public function create() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = json_decode(file_get_contents("php://input"));
             $this->account->user_id = $data->user_id;
             $this->account->balance = $data->balance;
 
             try {
-                if ($this->account->createAccount()) {
+                if ($this->account->create()) {
                     http_response_code(201);
                     echo json_encode(['message' => 'Account created successfully.']);
                 } else {
@@ -39,11 +39,11 @@ class AccountController {
         }
     }
 
-    public function getAccountById() {
+    public function getById() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $account_id = $_GET['account_id'] ?? null;
             if ($account_id) {
-                $account = $this->account->getAccountById($account_id);
+                $account = $this->account->getById($account_id);
                 if ($account) {
                     http_response_code(200);
                     echo json_encode($account);
@@ -61,9 +61,9 @@ class AccountController {
         }
     }
 
-    public function getAllAccounts() {
+    public function getAll() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $accounts = $this->account->getAllAccounts();
+            $accounts = $this->account->getAll();
             http_response_code(200);
             echo json_encode($accounts);
         } else {
@@ -72,11 +72,11 @@ class AccountController {
         }
     }
 
-    public function getAccountsByUserId() {
+    public function getByUserId() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $user_id = $_SESSION['user_id'] ?? null;
             if ($user_id) {
-                $accounts = $this->account->getAccountsByUserId($user_id);
+                $accounts = $this->account->getByUserId($user_id);
                 if ($accounts) {
                     http_response_code(200);
                     echo json_encode($accounts);
@@ -116,11 +116,11 @@ class AccountController {
         }
     }
 
-    public function deleteAccount() {
+    public function delete() {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
             $account_id = $_GET['account_id'] ?? null;
             if ($account_id) {
-                if ($this->account->deleteAccount($account_id)) {
+                if ($this->account->delete($account_id)) {
                     http_response_code(200);
                     echo json_encode(['message' => 'Account deleted successfully.']);
                 } else {
@@ -137,11 +137,11 @@ class AccountController {
         }
     }
 
-    public function getAccountTransactions() {
+    public function getTransactions() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $account_id = $_GET['account_id'] ?? null;
             if ($account_id) {
-                $transactions = $this->account->getAccountTransactions($account_id);
+                $transactions = $this->account->getTransactions($account_id);
                 if ($transactions) {
                     http_response_code(200);
                     echo json_encode($transactions);
@@ -167,25 +167,25 @@ $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'create':
-        $controller->createAccount();
+        $controller->create();
         break;
-    case 'get':
-        $controller->getAccountById();
+    case 'getById':
+        $controller->getById();
         break;
     case 'getAll':
-        $controller->getAllAccounts();
+        $controller->getAll();
         break;
     case 'getByUserId':
-        $controller->getAccountsByUserId();
+        $controller->getByUserId();
         break;
-    case 'update':
+    case 'updateBalance':
         $controller->updateBalance();
         break;
     case 'delete':
-        $controller->deleteAccount();
+        $controller->delete();
         break;
     case 'getTransactions':
-        $controller->getAccountTransactions();
+        $controller->getTransactions();
         break;
     default:
         http_response_code(404);

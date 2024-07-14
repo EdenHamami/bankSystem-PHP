@@ -14,7 +14,7 @@ class User {
     }
 
     // Create a new user
-    public function createUser() {
+    public function create() {
         // Validate email format
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Invalid email format.");
@@ -50,9 +50,22 @@ class User {
         }
         return false;
     }
-
+    // Get all users
+    public function getAll() {
+        // SQL query to retrieve all users
+        $query = "SELECT * FROM " . $this->table;
+        
+        // Prepare the query
+        $stmt = $this->conn->prepare($query);
+        
+        // Execute the query
+        $stmt->execute();
+        
+        // Fetch all results
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     // Get user by ID
-    public function getUserById($user_id) {
+    public function getById($user_id) {
         // SQL query to retrieve user details by user_id from the database
         $query = "SELECT * FROM " . $this->table . " WHERE user_id = :user_id";
         
@@ -80,7 +93,7 @@ class User {
     }
 
     // Get user by email
-    public function getUserByEmail($email) {
+    public function getByEmail($email) {
         // SQL query to retrieve user details by email from the database
         $query = "SELECT * FROM " . $this->table . " WHERE email = :email";
         
@@ -108,14 +121,14 @@ class User {
     }
 
     // Update user details
-    public function updateUser() {
+    public function update() {
         // Validate email format
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Invalid email format.");
         }
     
         // Check if email is unique if it has been changed
-        $originalUser = $this->getUserById($this->user_id);
+        $originalUser = $this->getById($this->user_id);
         if ($originalUser['email'] !== $this->email && !$this->isEmailUnique()) {
             throw new Exception("Email already in use.");
         }
@@ -156,9 +169,9 @@ class User {
         // If the query failed
         return false;
     }
-    
+
     // Delete user by ID
-    public function deleteUser($user_id) {
+    public function delete($user_id) {
         // SQL query to delete a user by user_id
         $query = "DELETE FROM " . $this->table . " WHERE user_id = :user_id";
         
@@ -219,30 +232,18 @@ class User {
         return $row['count'] == 0;
     }
 
-    // Get all users
-    public function getAllUsers() {
-        // SQL query to retrieve all users
-        $query = "SELECT * FROM " . $this->table;
-        
-        // Prepare the query
+
+
+    // Check if a user exists by ID
+    public function exists($user_id) {
+        $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);
-        
-        // Execute the query
+
+        $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
-        
-        // Fetch all results
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['count'] > 0;
     }
-        // Check if a user exists by ID
-        public function userExists($user_id) {
-            $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE user_id = :user_id";
-            $stmt = $this->conn->prepare($query);
-    
-            $stmt->bindParam(':user_id', $user_id);
-            $stmt->execute();
-    
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row['count'] > 0;
-        }
 }
 ?>

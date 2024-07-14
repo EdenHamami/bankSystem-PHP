@@ -12,9 +12,9 @@ class Account {
     }
 
     // Create a new account
-    public function createAccount() {
+    public function create() {
         $userModel = new User($this->conn);
-        if (!$userModel->userExists($this->user_id)) {
+        if (!$userModel->exists($this->user_id)) {
             throw new Exception("User does not exist.");
         }
 
@@ -31,7 +31,7 @@ class Account {
     }
 
     // Get account details by ID
-    public function getAccountById($account_id) {
+    public function getById($account_id) {
         $query = "SELECT * FROM " . $this->table . " WHERE account_id = :account_id";
         $stmt = $this->conn->prepare($query);
 
@@ -49,7 +49,7 @@ class Account {
     }
 
     // Get all accounts
-    public function getAllAccounts() {
+    public function getAll() {
         $query = "SELECT * FROM " . $this->table;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -57,7 +57,7 @@ class Account {
     }
 
     // Get all accounts by user ID
-    public function getAccountsByUserId($user_id) {
+    public function getByUserId($user_id) {
         $query = "SELECT * FROM " . $this->table . " WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);
 
@@ -106,7 +106,7 @@ class Account {
     }
 
     // Delete account by ID
-    public function deleteAccount($account_id) {
+    public function delete($account_id) {
         $query = "DELETE FROM " . $this->table . " WHERE account_id = :account_id";
         $stmt = $this->conn->prepare($query);
 
@@ -119,7 +119,7 @@ class Account {
     }
 
     // Get all transactions for an account
-    public function getAccountTransactions($account_id) {
+    public function getTransactions($account_id) {
         // Example implementation - should be customized based on your schema
         $query = "
             SELECT * FROM transfers WHERE from_account_id = :account_id

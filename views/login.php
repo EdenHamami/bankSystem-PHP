@@ -7,7 +7,7 @@
 <body>
     <div class="container">
         <h2>Login</h2>
-        <form method="POST" action="../controllers/UserController.php?action=login">
+        <form method="POST" action="../controllers/UserController.php?action=loginUser">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <br>

@@ -14,15 +14,15 @@ class UserController {
         $this->user = new User($this->db);
     }
 
-    // Function to handle creating a new user
-    public function createUser() {
+    // Create a new user
+    public function create() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->user->name = $_POST['name'];
             $this->user->email = $_POST['email'];
             $this->user->password_hash = $_POST['password'];
 
             try {
-                if ($this->user->createUser()) {
+                if ($this->user->create()) {
                     http_response_code(201);
                     echo json_encode(['message' => 'User created successfully.']);
                 } else {
@@ -44,13 +44,13 @@ class UserController {
         }
     }
 
-    // Function to handle login
-    public function loginUser() {
+    // Handle user login
+    public function login() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $user_data = $this->user->getUserByEmail($email);
+            $user_data = $this->user->getByEmail($email);
             if ($user_data && $this->user->verifyPassword($email, $password)) {
                 $_SESSION['user_id'] = $user_data['user_id']; // Save user_id in session
                 header('Location: ../views/accounts.php');
@@ -64,20 +64,20 @@ class UserController {
         }
     }
 
-    // Function to display the login page
+    // Show login page
     public function showLogin() {
         include_once '../views/login.php';
     }
 
-    // Function to display the register page
+    // Show register page
     public function showRegister() {
         include_once '../views/register.php';
     }
 
-    // Function to handle reading all users
-    public function readAllUsers() {
+    // Get all users
+    public function getAll() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $users = $this->user->getAllUsers();
+            $users = $this->user->getAll();
             http_response_code(200);
             echo json_encode($users);
         } else {
@@ -86,12 +86,12 @@ class UserController {
         }
     }
 
-    // Function to handle reading a user by ID
-    public function readUser() {
+    // Get user by ID
+    public function getById() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $id = $_GET['id'] ?? null;
             if ($id) {
-                $user_data = $this->user->getUserById($id);
+                $user_data = $this->user->getById($id);
                 if ($user_data) {
                     http_response_code(200);
                     echo json_encode($user_data);
@@ -109,8 +109,8 @@ class UserController {
         }
     }
 
-    // Function to handle updating a user
-    public function updateUser() {
+    // Update user details
+    public function update() {
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $data = json_decode(file_get_contents("php://input"));
             $id = $_GET['id'] ?? null;
@@ -122,7 +122,7 @@ class UserController {
                     $this->user->password_hash = $data->password;
                 }
 
-                if ($this->user->updateUser()) {
+                if ($this->user->update()) {
                     http_response_code(200);
                     echo json_encode(['message' => 'User updated successfully.']);
                 } else {
@@ -139,13 +139,13 @@ class UserController {
         }
     }
 
-    // Function to handle deleting a user
-    public function deleteUser() {
+    // Delete user by ID
+    public function delete() {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
             $id = $_GET['id'] ?? null;
             if ($id) {
                 $this->user->user_id = $id;
-                if ($this->user->deleteUser($id)) {
+                if ($this->user->delete($id)) {
                     http_response_code(200);
                     echo json_encode(['message' => 'User deleted successfully.']);
                 } else {
@@ -169,11 +169,11 @@ $controller = new UserController();
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
-    case 'createUser':
-        $controller->createUser();
+    case 'create':
+        $controller->create();
         break;
     case 'login':
-        $controller->loginUser();
+        $controller->login();
         break;
     case 'showLogin':
         $controller->showLogin();
@@ -181,17 +181,17 @@ switch ($action) {
     case 'showRegister':
         $controller->showRegister();
         break;
-    case 'readAllUsers':
-        $controller->readAllUsers();
+    case 'getAll':
+        $controller->getAll();
         break;
-    case 'readUser':
-        $controller->readUser();
+    case 'getById':
+        $controller->getById();
         break;
-    case 'updateUser':
-        $controller->updateUser();
+    case 'update':
+        $controller->update();
         break;
-    case 'deleteUser':
-        $controller->deleteUser();
+    case 'delete':
+        $controller->delete();
         break;
     default:
         http_response_code(404);
