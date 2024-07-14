@@ -13,7 +13,6 @@ class Account {
 
     // Create a new account
     public function createAccount() {
-        // Check if user exists before creating account
         $userModel = new User($this->conn);
         if (!$userModel->userExists($this->user_id)) {
             throw new Exception("User does not exist.");
@@ -83,7 +82,7 @@ class Account {
             // Get the current balance
             $account = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($account) {
-                // Update the balance to the new balance
+                // Update the balance
                 $query = "UPDATE " . $this->table . " SET balance = :balance WHERE account_id = :account_id";
                 $stmt = $this->conn->prepare($query);
                 $stmt->bindParam(':balance', $new_balance);
@@ -121,25 +120,19 @@ class Account {
 
     // Get all transactions for an account
     public function getAccountTransactions($account_id) {
+        // Example implementation - should be customized based on your schema
         $query = "
-            SELECT 'deposit' as type, amount, timestamp 
-            FROM deposits 
-            WHERE account_id = :account_id
+            SELECT * FROM transfers WHERE from_account_id = :account_id
             UNION ALL
-            SELECT 'withdrawal' as type, amount, timestamp 
-            FROM withdrawals 
-            WHERE account_id = :account_id
+            SELECT * FROM transfers WHERE to_account_id = :account_id
             UNION ALL
-            SELECT 'transfer_out' as type, amount, timestamp 
-            FROM transfers 
-            WHERE from_account_id = :account_id
+            SELECT * FROM withdrawals WHERE account_id = :account_id
             UNION ALL
-            SELECT 'transfer_in' as type, amount, timestamp 
-            FROM transfers 
-            WHERE to_account_id = :account_id
+            SELECT * FROM deposits WHERE account_id = :account_id
             ORDER BY timestamp DESC
         ";
         $stmt = $this->conn->prepare($query);
+
         $stmt->bindParam(':account_id', $account_id);
         $stmt->execute();
 

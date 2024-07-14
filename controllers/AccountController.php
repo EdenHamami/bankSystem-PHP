@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start session
+
 include_once '../config/database.php';
 include_once '../models/Account.php';
 include_once '../models/User.php';
@@ -8,15 +10,11 @@ class AccountController {
     private $account;
 
     public function __construct() {
-        // Create a database connection
         $database = Database::getInstance();
         $this->db = $database->getConnection();
-        
-        // Create a new Account object
         $this->account = new Account($this->db);
     }
 
-    // Function to handle creating a new account
     public function createAccount() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = json_decode(file_get_contents("php://input"));
@@ -41,7 +39,6 @@ class AccountController {
         }
     }
 
-    // Function to handle getting account details by ID
     public function getAccountById() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $account_id = $_GET['account_id'] ?? null;
@@ -64,7 +61,6 @@ class AccountController {
         }
     }
 
-    // Function to handle getting all accounts
     public function getAllAccounts() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $accounts = $this->account->getAllAccounts();
@@ -76,10 +72,9 @@ class AccountController {
         }
     }
 
-    // Function to handle getting all accounts by user ID
     public function getAccountsByUserId() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $user_id = $_GET['user_id'] ?? null;
+            $user_id = $_SESSION['user_id'] ?? null;
             if ($user_id) {
                 $accounts = $this->account->getAccountsByUserId($user_id);
                 if ($accounts) {
@@ -99,7 +94,6 @@ class AccountController {
         }
     }
 
-    // Function to handle updating account balance
     public function updateBalance() {
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $data = json_decode(file_get_contents("php://input"));
@@ -122,7 +116,6 @@ class AccountController {
         }
     }
 
-    // Function to handle deleting an account
     public function deleteAccount() {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
             $account_id = $_GET['account_id'] ?? null;
@@ -144,7 +137,6 @@ class AccountController {
         }
     }
 
-    // Function to handle getting all transactions for an account
     public function getAccountTransactions() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $account_id = $_GET['account_id'] ?? null;
@@ -171,7 +163,6 @@ class AccountController {
 // Instantiate the AccountController
 $controller = new AccountController();
 
-// Determine the action based on the request
 $action = $_GET['action'] ?? '';
 
 switch ($action) {

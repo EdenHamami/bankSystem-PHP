@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start session
+
 include_once '../config/database.php';
 include_once '../models/User.php';
 
@@ -7,38 +9,69 @@ class UserController {
     private $user;
 
     public function __construct() {
-        // Create a database connection
         $database = Database::getInstance();
         $this->db = $database->getConnection();
-        
-        // Create a new User object
         $this->user = new User($this->db);
     }
 
     // Function to handle creating a new user
     public function createUser() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = json_decode(file_get_contents("php://input"));
-            $this->user->name = $data->name;
-            $this->user->email = $data->email;
-            $this->user->password_hash = $data->password;
+            $this->user->name = $_POST['name'];
+            $this->user->email = $_POST['email'];
+            $this->user->password_hash = $_POST['password'];
 
-            if ($this->user->createUser()) {
-                http_response_code(201);
-                echo json_encode(['message' => 'User created successfully.']);
-            } else {
-                if (!$this->user->isEmailUnique()) {
-                    http_response_code(409);
-                    echo json_encode(['message' => 'User creation failed. Email already exists.']);
+            try {
+                if ($this->user->createUser()) {
+                    http_response_code(201);
+                    echo json_encode(['message' => 'User created successfully.']);
                 } else {
-                    http_response_code(400);
-                    echo json_encode(['message' => 'User creation failed.']);
+                    if (!$this->user->isEmailUnique()) {
+                        http_response_code(409);
+                        echo json_encode(['message' => 'User creation failed. Email already exists.']);
+                    } else {
+                        http_response_code(400);
+                        echo json_encode(['message' => 'User creation failed.']);
+                    }
                 }
+            } catch (Exception $e) {
+                http_response_code(400);
+                echo json_encode(['message' => $e->getMessage()]);
             }
         } else {
             http_response_code(405);
             echo json_encode(['message' => 'Invalid request method.']);
         }
+    }
+
+    // Function to handle login
+    public function loginUser() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+
+            $user_data = $this->user->getUserByEmail($email);
+            if ($user_data && $this->user->verifyPassword($email, $password)) {
+                $_SESSION['user_id'] = $user_data['user_id']; // Save user_id in session
+                header('Location: ../views/accounts.php');
+                exit();
+            } else {
+                echo "Invalid email or password.";
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(['message' => 'Invalid request method.']);
+        }
+    }
+
+    // Function to display the login page
+    public function showLogin() {
+        include_once '../views/login.php';
+    }
+
+    // Function to display the register page
+    public function showRegister() {
+        include_once '../views/register.php';
     }
 
     // Function to handle reading all users
@@ -88,7 +121,7 @@ class UserController {
                 if (isset($data->password)) {
                     $this->user->password_hash = $data->password;
                 }
-    
+
                 if ($this->user->updateUser()) {
                     http_response_code(200);
                     echo json_encode(['message' => 'User updated successfully.']);
@@ -105,7 +138,7 @@ class UserController {
             echo json_encode(['message' => 'Invalid request method.']);
         }
     }
-    
+
     // Function to handle deleting a user
     public function deleteUser() {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
@@ -133,23 +166,31 @@ class UserController {
 // Instantiate the UserController
 $controller = new UserController();
 
-// Determine the action based on the request
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
-    case 'create':
+    case 'createUser':
         $controller->createUser();
         break;
-    case 'readAll':
+    case 'login':
+        $controller->loginUser();
+        break;
+    case 'showLogin':
+        $controller->showLogin();
+        break;
+    case 'showRegister':
+        $controller->showRegister();
+        break;
+    case 'readAllUsers':
         $controller->readAllUsers();
         break;
-    case 'read':
+    case 'readUser':
         $controller->readUser();
         break;
-    case 'update':
+    case 'updateUser':
         $controller->updateUser();
         break;
-    case 'delete':
+    case 'deleteUser':
         $controller->deleteUser();
         break;
     default:
