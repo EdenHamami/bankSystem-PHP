@@ -1,0 +1,92 @@
+/* auth.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #6A82FB, #FC5C7D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.auth-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-container h2 {
+    margin-bottom: 20px;
+    color: #444;
+    font-size: 28px;
+}
+
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-container label {
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.auth-container input[type="text"]:focus,
+.auth-container input[type="email"]:focus,
+.auth-container input[type="password"]:focus {
+    border-color: #6A82FB;
+}
+
+.auth-container button[type="submit"] {
+    padding: 12px;
+    border: none;
+    background: #6A82FB;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.auth-container button[type="submit"]:hover {
+    background: #FC5C7D;
+}
+
+.auth-container .error {
+    margin-top: 20px;
+    color: red;
+    font-size: 14px;
+    border: 1px solid red;
+    background: #ffe5e5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.auth-container a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #6A82FB;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.auth-container a:hover {
+    color: #FC5C7D;
+}

@@ -148,18 +148,22 @@ class AccountController {
             echo json_encode(['message' => 'Invalid request method.']);
         }
     }
-
     public function getTransactions() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $account_id = $_GET['account_id'] ?? null;
             if ($account_id) {
-                $transactions = $this->account->getTransactions($account_id);
-                if ($transactions) {
-                    http_response_code(200);
-                    echo json_encode($transactions);
-                } else {
-                    http_response_code(404);
-                    echo json_encode(['message' => 'No transactions found for this account.']);
+                try {
+                    $transactions = $this->account->getTransactions($account_id);
+                    if ($transactions) {
+                        http_response_code(200);
+                        echo json_encode($transactions);
+                    } else {
+                        http_response_code(404);
+                        echo json_encode(['message' => 'No transactions found for this account.']);
+                    }
+                } catch (Exception $e) {
+                    http_response_code(500);
+                    echo json_encode(['message' => 'Server error: ' . $e->getMessage()]);
                 }
             } else {
                 http_response_code(400);
@@ -170,6 +174,8 @@ class AccountController {
             echo json_encode(['message' => 'Invalid request method.']);
         }
     }
+    
+    
     public function verifyOwnership($account_id) {
         $user_id = $_SESSION['user_id'] ?? null;
         if ($user_id) {

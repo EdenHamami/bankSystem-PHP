@@ -1,5 +1,4 @@
 <?php
-//views/account.php
 session_start();
 
 // בדיקת אם המשתמש מחובר
@@ -21,6 +20,11 @@ if (!isset($_SESSION['user_id'])) {
         <ul id="accounts-list">
             <!-- Accounts will be dynamically inserted here -->
         </ul>
+        <?php if (isset($_GET['error'])): ?>
+            <div class="error">
+                <?php echo htmlspecialchars($_GET['error']); ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <script>

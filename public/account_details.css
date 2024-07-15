@@ -19,21 +19,22 @@ body {
     text-align: left;
 }
 
+.account-info, .transactions {
+    margin-bottom: 20px;
+}
+
 h2 {
     margin-bottom: 20px;
     color: #333;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 10px;
+p {
+    margin: 10px 0;
 }
 
 a {
+    display: inline-block;
+    margin-top: 20px;
     color: #0066cc;
     text-decoration: none;
 }
