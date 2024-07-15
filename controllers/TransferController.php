@@ -45,7 +45,7 @@ class TransferController {
             try {
                 if ($this->transfer->create()) {
                     if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/dashboard.php?success=Transfer successful.');
+                        header('Location: ../views/transfer.php?success=Transfer successful.');
                         exit();
                     } else {
                         http_response_code(201);
@@ -91,4 +91,3 @@ switch ($action) {
         break;
 }
 ?>
-

@@ -43,7 +43,7 @@ class DepositController {
             try {
                 if ($this->deposit->create()) {
                     if (isset($_POST['account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/dashboard.php?success=Deposit successful.');
+                        header('Location: ../views/deposit.php?success=Deposit successful.');
                         exit();
                     } else {
                         http_response_code(201);

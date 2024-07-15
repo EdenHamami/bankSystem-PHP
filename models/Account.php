@@ -114,23 +114,39 @@ class Account {
 
     // Get all transactions for an account
     public function getTransactions($account_id) {
-        $query = "
-            SELECT * FROM transfers WHERE from_account_id = :account_id
-            UNION ALL
-            SELECT * FROM transfers WHERE to_account_id = :account_id
-            UNION ALL
-            SELECT * FROM withdrawals WHERE account_id = :account_id
-            UNION ALL
-            SELECT * FROM deposits WHERE account_id = :account_id
-            ORDER BY timestamp DESC
-        ";
-        $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(':account_id', $account_id);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $query = "
+                SELECT timestamp AS date, amount, 'deposit' AS type, 'IN' AS direction
+                FROM deposits 
+                WHERE account_id = :account_id 
+                UNION ALL
+                SELECT timestamp AS date, amount, 'withdrawal' AS type, 'OUT' AS direction
+                FROM withdrawals 
+                WHERE account_id = :account_id 
+                UNION ALL
+                SELECT timestamp AS date, amount, 'transfer' AS type, 
+                       CASE 
+                           WHEN to_account_id = :account_id THEN 'IN' 
+                           ELSE 'OUT' 
+                       END AS direction
+                FROM transfers 
+                WHERE from_account_id = :account_id OR to_account_id = :account_id
+                ORDER BY date DESC
+            ";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':account_id', $account_id);
+            $stmt->execute();
+    
+            $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $transactions;
+        } catch (PDOException $e) {
+            throw new Exception("Error retrieving transactions: " . $e->getMessage());
+        }
     }
+    
+    
+    
+    
         // Verify account ownership
         public function verifyOwnership($account_id) {
             $query = "SELECT user_id FROM " . $this->table . " WHERE account_id = :account_id";

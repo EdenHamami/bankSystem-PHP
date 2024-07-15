@@ -1,47 +1,72 @@
+/* בסיסי */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #6A82FB, #FC5C7D);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
+    color: #333;
 }
 
 .container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 600px;
     text-align: left;
 }
 
+/* כותרות */
 h2 {
     margin-bottom: 20px;
-    color: #333;
+    color: #444;
+    font-size: 28px;
 }
 
+p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* חשבונות */
 ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
 }
 
 li {
+    padding: 15px;
     margin-bottom: 10px;
+    background: #f4f4f4;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ddd;
 }
 
+li:nth-child(even) {
+    background: #e9e9e9;
+}
+
+/* קישורים */
 a {
     color: #0066cc;
     text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
 }
 
 a:hover {
-    text-decoration: underline;
+    color: #004499;
 }
 
+/* שגיאות */
 .error {
     margin-top: 20px;
     color: red;

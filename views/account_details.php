@@ -54,7 +54,7 @@ if (!$account_id) {
                     if (Array.isArray(transactions) && transactions.length > 0) {
                         transactions.forEach(transaction => {
                             const listItem = document.createElement('li');
-                            listItem.textContent = `Date: ${transaction.date}, Amount: ${transaction.amount}, Type: ${transaction.type}`;
+                            listItem.textContent = `Date: ${transaction.date}, Amount: ${transaction.amount}, Type: ${transaction.type}, Direction: ${transaction.direction}`;
                             transactionsList.appendChild(listItem);
                         });
                     } else {

@@ -43,7 +43,7 @@ class WithdrawalController {
             try {
                 if ($this->withdrawal->create()) {
                     if (isset($_POST['account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/dashboard.php?success=Withdrawal successful.');
+                        header('Location: ../views/withdraw.php?success=Withdrawal successful.');
                         exit();
                     } else {
                         http_response_code(201);
@@ -89,5 +89,3 @@ switch ($action) {
         break;
 }
 ?>
-
-
