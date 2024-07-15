@@ -1,4 +1,5 @@
 <?php
+//models/User.php
 class User {
     private $conn;
     private $table = 'users';
@@ -246,4 +247,4 @@ class User {
         return $row['count'] > 0;
     }
 }
-?>
+

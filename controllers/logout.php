@@ -5,4 +5,4 @@ session_destroy();
 echo "Session destroyed";
 header("Location: ../views/login.php");
 exit();
-?>
+

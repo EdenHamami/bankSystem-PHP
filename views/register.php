@@ -7,7 +7,7 @@
 <body>
     <div class="container">
         <h2>Register</h2>
-        <form method="POST" action="../controllers/UserController.php?action=register">
+        <form method="POST" action="../controllers/UserController.php?action=create">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
             <br>

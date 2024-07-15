@@ -76,4 +76,4 @@ class Withdrawal {
         return false;
     }
 }
-?>
+

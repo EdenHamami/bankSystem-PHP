@@ -1,4 +1,5 @@
 <?php
+//views/account.php
 session_start();
 
 // בדיקת אם המשתמש מחובר

@@ -1,4 +1,5 @@
 <?php
+//models/Account.php
 class Account {
     private $conn;
     private $table = 'accounts';
