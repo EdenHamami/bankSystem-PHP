@@ -22,6 +22,8 @@ class DepositController {
 
     // Create a new deposit
     public function create() {
+        $isJsonRequest = false;
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_POST['account_id']) && isset($_POST['amount'])) {
                 // Handling form submission
@@ -30,46 +32,53 @@ class DepositController {
             } else {
                 // Handling JSON request
                 $data = json_decode(file_get_contents("php://input"));
-                $this->deposit->account_id = $data->account_id;
-                $this->deposit->amount = $data->amount;
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $this->deposit->account_id = $data->account_id;
+                    $this->deposit->amount = $data->amount;
+                    $isJsonRequest = true;
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['message' => 'Invalid JSON']);
+                    return;
+                }
             }
 
             if (!$this->account->verifyOwnership($this->deposit->account_id)) {
-                http_response_code(403);
-                echo json_encode(['message' => 'Unauthorized']);
+                $this->sendError('Unauthorized', 403, $isJsonRequest);
                 return;
             }
 
             try {
                 if ($this->deposit->create()) {
-                    if (isset($_POST['account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/deposit.php?success=Deposit successful.');
-                        exit();
-                    } else {
-                        http_response_code(201);
-                        echo json_encode(['message' => 'Deposit created successfully.']);
-                    }
+                    $this->sendSuccess('Deposit successful.', $isJsonRequest);
                 } else {
-                    if (isset($_POST['account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/deposit.php?error=Deposit failed.');
-                        exit();
-                    } else {
-                        http_response_code(400);
-                        echo json_encode(['message' => 'Deposit creation failed.']);
-                    }
+                    $this->sendError('Deposit failed.', 400, $isJsonRequest);
                 }
             } catch (Exception $e) {
-                if (isset($_POST['account_id']) && isset($_POST['amount'])) {
-                    header('Location: ../views/deposit.php?error=' . urlencode($e->getMessage()));
-                    exit();
-                } else {
-                    http_response_code(400);
-                    echo json_encode(['message' => $e->getMessage()]);
-                }
+                $this->sendError($e->getMessage(), 400, $isJsonRequest);
             }
         } else {
-            http_response_code(405);
-            echo json_encode(['message' => 'Invalid request method.']);
+            $this->sendError('Invalid request method.', 405, $isJsonRequest);
+        }
+    }
+
+    private function sendError($message, $statusCode, $isJsonRequest) {
+        if ($isJsonRequest) {
+            http_response_code($statusCode);
+            echo json_encode(['message' => $message]);
+        } else {
+            header('Location: ../views/deposit.php?error=' . urlencode($message));
+            exit();
+        }
+    }
+
+    private function sendSuccess($message, $isJsonRequest) {
+        if ($isJsonRequest) {
+            http_response_code(201);
+            echo json_encode(['message' => $message]);
+        } else {
+            header('Location: ../views/deposit.php?success=' . urlencode($message));
+            exit();
         }
     }
 }

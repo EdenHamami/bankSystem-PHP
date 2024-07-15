@@ -22,6 +22,8 @@ class TransferController {
 
     // Create a new transfer
     public function create() {
+        $isJsonRequest = false;
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
                 // Handling form submission
@@ -31,47 +33,54 @@ class TransferController {
             } else {
                 // Handling JSON request
                 $data = json_decode(file_get_contents("php://input"));
-                $this->transfer->from_account_id = $data->from_account_id;
-                $this->transfer->to_account_id = $data->to_account_id;
-                $this->transfer->amount = $data->amount;
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $this->transfer->from_account_id = $data->from_account_id;
+                    $this->transfer->to_account_id = $data->to_account_id;
+                    $this->transfer->amount = $data->amount;
+                    $isJsonRequest = true;
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['message' => 'Invalid JSON']);
+                    return;
+                }
             }
 
             if (!$this->account->verifyOwnership($this->transfer->from_account_id) || !$this->account->exists($this->transfer->to_account_id)) {
-                http_response_code(403);
-                echo json_encode(['message' => 'Unauthorized or target account does not exist']);
+                $this->sendError('Unauthorized or target account does not exist', 403, $isJsonRequest);
                 return;
             }
 
             try {
                 if ($this->transfer->create()) {
-                    if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/transfer.php?success=Transfer successful.');
-                        exit();
-                    } else {
-                        http_response_code(201);
-                        echo json_encode(['message' => 'Transfer created successfully.']);
-                    }
+                    $this->sendSuccess('Transfer successful.', $isJsonRequest);
                 } else {
-                    if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
-                        header('Location: ../views/transfer.php?error=Transfer failed.');
-                        exit();
-                    } else {
-                        http_response_code(400);
-                        echo json_encode(['message' => 'Transfer creation failed.']);
-                    }
+                    $this->sendError('Transfer failed.', 400, $isJsonRequest);
                 }
             } catch (Exception $e) {
-                if (isset($_POST['from_account_id']) && isset($_POST['to_account_id']) && isset($_POST['amount'])) {
-                    header('Location: ../views/transfer.php?error=' . urlencode($e->getMessage()));
-                    exit();
-                } else {
-                    http_response_code(400);
-                    echo json_encode(['message' => $e->getMessage()]);
-                }
+                $this->sendError($e->getMessage(), 400, $isJsonRequest);
             }
         } else {
-            http_response_code(405);
-            echo json_encode(['message' => 'Invalid request method.']);
+            $this->sendError('Invalid request method.', 405, $isJsonRequest);
+        }
+    }
+
+    private function sendError($message, $statusCode, $isJsonRequest) {
+        if ($isJsonRequest) {
+            http_response_code($statusCode);
+            echo json_encode(['message' => $message]);
+        } else {
+            header('Location: ../views/transfer.php?error=' . urlencode($message));
+            exit();
+        }
+    }
+
+    private function sendSuccess($message, $isJsonRequest) {
+        if ($isJsonRequest) {
+            http_response_code(201);
+            echo json_encode(['message' => $message]);
+        } else {
+            header('Location: ../views/transfer.php?success=' . urlencode($message));
+            exit();
         }
     }
 }

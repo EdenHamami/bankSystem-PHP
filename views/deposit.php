@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_id'])) {
 <body>
     <div class="container">
         <h2>Deposit</h2>
-        <form method="POST" action="../controllers/DepositController.php?action=create">
+        <form method="POST" action="../controllers/DepositController.php?action=create" id="depositForm">
             <label for="account_id">Account ID:</label>
             <input type="text" id="account_id" name="account_id" required>
             <br>
@@ -26,18 +26,42 @@ if (!isset($_SESSION['user_id'])) {
             <br>
             <button type="submit">Deposit</button>
         </form>
-        <?php if (isset($_GET['success'])): ?>
-            <div class="success">
-                <?php echo htmlspecialchars($_GET['success']); ?>
-            </div>
-        <?php endif; ?>
-        <?php if (isset($_GET['error'])): ?>
-            <div class="error">
-                <?php echo htmlspecialchars($_GET['error']); ?>
-            </div>
-        <?php endif; ?>
+        <div id="message"></div>
         <br>
         <a href="dashboard.php">Back to Dashboard</a>
     </div>
+
+    <script>
+        document.getElementById('depositForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const jsonData = JSON.stringify(Object.fromEntries(formData));
+            fetch(event.target.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                const messageDiv = document.getElementById('message');
+                if (body.message) {
+                    if (status >= 200 && status < 300) {
+                        messageDiv.className = 'success';
+                    } else {
+                        messageDiv.className = 'error';
+                    }
+                    messageDiv.textContent = body.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('message');
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'An unexpected error occurred.';
+            });
+        });
+    </script>
 </body>
 </html>
