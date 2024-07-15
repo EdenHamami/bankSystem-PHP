@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//controllers/AccountController.php
 include_once '../config/database.php';
 include_once '../models/Account.php';
 include_once '../models/User.php';
@@ -169,6 +169,20 @@ class AccountController {
             http_response_code(405);
             echo json_encode(['message' => 'Invalid request method.']);
         }
+    }
+    public function verifyOwnership($account_id) {
+        $user_id = $_SESSION['user_id'] ?? null;
+        if ($user_id) {
+            $account = $this->account->getById($account_id);
+            if ($account && $account['user_id'] == $user_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public function accountExists($account_id) {
+        $account = $this->account->getById($account_id);
+        return $account !== false;
     }
 }
 

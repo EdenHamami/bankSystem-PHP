@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//views/transfer.php
 // בדיקת אם המשתמש מחובר
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');

@@ -1,4 +1,6 @@
 <?php
+//views/withdraw.php
+
 session_start();
 
 // בדיקת אם המשתמש מחובר

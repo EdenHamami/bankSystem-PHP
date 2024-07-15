@@ -8,6 +8,7 @@ include_once '../models/Account.php';
 class DepositController {
     private $db;
     private $deposit;
+    private $account;
 
     public function __construct() {
         // Create a database connection
@@ -16,6 +17,7 @@ class DepositController {
         
         // Create a new Deposit object
         $this->deposit = new Deposit($this->db);
+        $this->account = new Account($this->db);
     }
 
     // Create a new deposit
@@ -30,6 +32,12 @@ class DepositController {
                 $data = json_decode(file_get_contents("php://input"));
                 $this->deposit->account_id = $data->account_id;
                 $this->deposit->amount = $data->amount;
+            }
+
+            if (!$this->account->verifyOwnership($this->deposit->account_id)) {
+                http_response_code(403);
+                echo json_encode(['message' => 'Unauthorized']);
+                return;
             }
 
             try {

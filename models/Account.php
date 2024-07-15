@@ -130,5 +130,32 @@ class Account {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+        // Verify account ownership
+        public function verifyOwnership($account_id) {
+            $query = "SELECT user_id FROM " . $this->table . " WHERE account_id = :account_id";
+            $stmt = $this->conn->prepare($query);
+    
+            $stmt->bindParam(':account_id', $account_id);
+            $stmt->execute();
+    
+            $account = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($account && $account['user_id'] == $_SESSION['user_id']) {
+                return true;
+            }
+            return false;
+        }
+
+    // Check if an account exists by ID
+    public function exists($account_id) {
+        $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE account_id = :account_id";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':account_id', $account_id);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['count'] > 0;
+    }
 }
 ?>

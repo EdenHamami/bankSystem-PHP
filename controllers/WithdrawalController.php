@@ -8,6 +8,7 @@ include_once '../models/Account.php';
 class WithdrawalController {
     private $db;
     private $withdrawal;
+    private $account;
 
     public function __construct() {
         // Create a database connection
@@ -16,6 +17,7 @@ class WithdrawalController {
         
         // Create a new Withdrawal object
         $this->withdrawal = new Withdrawal($this->db);
+        $this->account = new Account($this->db);
     }
 
     // Create a new withdrawal
@@ -30,6 +32,12 @@ class WithdrawalController {
                 $data = json_decode(file_get_contents("php://input"));
                 $this->withdrawal->account_id = $data->account_id;
                 $this->withdrawal->amount = $data->amount;
+            }
+
+            if (!$this->account->verifyOwnership($this->withdrawal->account_id)) {
+                http_response_code(403);
+                echo json_encode(['message' => 'Unauthorized']);
+                return;
             }
 
             try {
@@ -81,3 +89,5 @@ switch ($action) {
         break;
 }
 ?>
+
+

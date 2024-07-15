@@ -8,6 +8,7 @@ include_once '../models/Account.php';
 class TransferController {
     private $db;
     private $transfer;
+    private $account;
 
     public function __construct() {
         // Create a database connection
@@ -16,6 +17,7 @@ class TransferController {
         
         // Create a new Transfer object
         $this->transfer = new Transfer($this->db);
+        $this->account = new Account($this->db);
     }
 
     // Create a new transfer
@@ -32,6 +34,12 @@ class TransferController {
                 $this->transfer->from_account_id = $data->from_account_id;
                 $this->transfer->to_account_id = $data->to_account_id;
                 $this->transfer->amount = $data->amount;
+            }
+
+            if (!$this->account->verifyOwnership($this->transfer->from_account_id) || !$this->account->exists($this->transfer->to_account_id)) {
+                http_response_code(403);
+                echo json_encode(['message' => 'Unauthorized or target account does not exist']);
+                return;
             }
 
             try {
@@ -83,3 +91,4 @@ switch ($action) {
         break;
 }
 ?>
+
