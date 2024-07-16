@@ -1,0 +1,92 @@
+/* בסיסי */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #6A82FB, #FC5C7D);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 600px;
+    text-align: left;
+}
+
+/* כותרות */
+h2 {
+    margin-bottom: 20px;
+    color: #444;
+    font-size: 28px;
+}
+
+p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* מידע על חשבון */
+.account-info {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* עסקאות */
+.transactions h2 {
+    margin-bottom: 10px;
+    color: #444;
+    font-size: 24px;
+}
+
+.transactions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.transactions li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f4f4f4;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transactions li:nth-child(even) {
+    background: #e9e9e9;
+}
+
+/* קישורים */
+a {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #004499;
+}
+
+.back-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* שגיאות */
+.error {
+    margin-top: 20px;
+    color: red;
+    font-size: 14px;
+}
