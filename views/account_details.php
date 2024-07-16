@@ -20,6 +20,7 @@ if (!$account_id) {
 <head>
     <title>Account Details</title>
     <link rel="stylesheet" type="text/css" href="../public/styles.css">
+    <link rel="stylesheet" type="text/css" href="../public/account_details.css">
 </head>
 <body>
     <div class="container">
@@ -30,9 +31,19 @@ if (!$account_id) {
         </div>
         <div class="transactions">
             <h2>Transactions</h2>
-            <ul id="transactions-list">
-                <!-- Transactions will be dynamically inserted here -->
-            </ul>
+            <table id="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Direction</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-list">
+                    <!-- Transactions will be dynamically inserted here -->
+                </tbody>
+            </table>
         </div>
         <a href="accounts.php" class="back-link">Back to Accounts</a>
     </div>
@@ -53,17 +64,25 @@ if (!$account_id) {
                     const transactionsList = document.getElementById('transactions-list');
                     if (Array.isArray(transactions) && transactions.length > 0) {
                         transactions.forEach(transaction => {
-                            const listItem = document.createElement('li');
-                            listItem.textContent = `Date: ${transaction.date}, Amount: ${transaction.amount}, Type: ${transaction.type}, Direction: ${transaction.direction}`;
-                            transactionsList.appendChild(listItem);
+                            const row = document.createElement('tr');
+                            const directionClass = transaction.direction === 'in' ? 'incoming' : 'outgoing';
+                            row.innerHTML = `
+                                <td>${transaction.date}</td>
+                                <td class="${directionClass}">${transaction.amount}</td>
+                                <td>${transaction.type}</td>
+                                <td>${transaction.direction}</td>
+                            `;
+                            transactionsList.appendChild(row);
                         });
                     } else {
-                        transactionsList.textContent = 'No transactions found.';
+                        const row = document.createElement('tr');
+                        row.innerHTML = '<td colspan="4">No transactions found.</td>';
+                        transactionsList.appendChild(row);
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching transactions:', error);
-                    document.getElementById('transactions-list').textContent = 'Failed to load transactions.';
+                    document.getElementById('transactions-list').innerHTML = '<tr><td colspan="4">Failed to load transactions.</td></tr>';
                 });
         });
     </script>

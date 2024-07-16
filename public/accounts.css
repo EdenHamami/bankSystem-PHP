@@ -1,33 +1,41 @@
 /* accounts.css */
 
-#accounts-list {
-    margin-top: 20px;
+ul#accounts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-#accounts-list li {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #f9f9f9;
+ul#accounts-list li {
+    background: #f8f8f8;
     border: 1px solid #ddd;
     border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 15px;
+    transition: background 0.3s, transform 0.3s;
 }
 
-#accounts-list li a {
-    color: #6A82FB;
+ul#accounts-list li:hover {
+    background: #f1f1f1;
+    transform: translateY(-2px);
+}
+
+ul#accounts-list a {
     text-decoration: none;
-    transition: color 0.3s;
+    color: #333;
+    font-weight: bold;
+    display: block;
 }
 
-#accounts-list li a:hover {
-    color: #FC5C7D;
+ul#accounts-list a:hover {
+    color: #6A82FB;
 }
 
 .error {
-    color: red;
-    font-size: 14px;
     margin-top: 20px;
     padding: 10px;
+    border-radius: 5px;
+    color: red;
     border: 1px solid red;
     background: #ffe5e5;
-    border-radius: 5px;
 }

@@ -20,6 +20,8 @@ body {
     text-align: center;
     width: 100%;
     max-width: 400px;
+    max-height: 80vh;
+    overflow: auto;
 }
 
 h2 {
@@ -70,6 +72,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background: #FC5C7D;
+    color:white;
 }
 
 .error,

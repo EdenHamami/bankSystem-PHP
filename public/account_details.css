@@ -37,11 +37,47 @@
     padding: 10px 20px;
     background: #6A82FB;
     color: white;
+    font-weight: bold;
     text-decoration: none;
     border-radius: 5px;
     transition: background 0.3s;
 }
 
+/* account_details.css */
+
+.transactions table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.transactions th, .transactions td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.transactions th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.incoming {
+    color: green;
+}
+
+.outgoing {
+    color: red;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #6A82FB;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
 .back-link:hover {
-    background: #FC5C7D;
+    color: #FC5C7D;
 }
