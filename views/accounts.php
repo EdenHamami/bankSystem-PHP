@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 <html>
 <head>
     <title>Accounts</title>
-    <link rel="stylesheet" type="text/css" href="../public/accounts.css">
+    <link rel="stylesheet" type="text/css" href="../public/styles.css">
 </head>
 <body>
     <div class="container">

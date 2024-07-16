@@ -47,11 +47,7 @@ if (!isset($_SESSION['user_id'])) {
             .then(({ status, body }) => {
                 const messageDiv = document.getElementById('message');
                 if (body.message) {
-                    if (status >= 200 && status < 300) {
-                        messageDiv.className = 'success';
-                    } else {
-                        messageDiv.className = 'error';
-                    }
+                    messageDiv.className = status >= 200 && status < 300 ? 'success' : 'error';
                     messageDiv.textContent = body.message;
                 }
             })

@@ -1,5 +1,4 @@
-/* בסיסי */
-body {
+/* body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
@@ -45,5 +44,5 @@ body {
 }
 
 .container {
-    margin-top: 60px; /* Add space for the navbar */
-}
+    margin-top: 60px; 
+}  */

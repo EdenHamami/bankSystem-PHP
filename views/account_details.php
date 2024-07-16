@@ -19,7 +19,7 @@ if (!$account_id) {
 <html>
 <head>
     <title>Account Details</title>
-    <link rel="stylesheet" type="text/css" href="../public/account_details.css">
+    <link rel="stylesheet" type="text/css" href="../public/styles.css">
 </head>
 <body>
     <div class="container">

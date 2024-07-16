@@ -26,17 +26,25 @@ if (!isset($_SESSION['user_id'])) {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
+                .then(response => {
+                    return response.json().then(data => ({
+                        status: response.status,
+                        body: data
+                    }));
+                })
+                .then(result => {
                     const messageDiv = document.getElementById('message');
-                    if (data.message) {
-                        messageDiv.innerHTML = data.message;
+                    if (result.body.message) {
+                        messageDiv.innerHTML = result.body.message;
+                        messageDiv.className = result.status === 201 ? 'success' : 'error';
                     } else {
                         messageDiv.innerHTML = 'An unexpected error occurred.';
+                        messageDiv.className = 'error';
                     }
                 })
                 .catch(error => {
                     document.getElementById('message').innerHTML = 'An error occurred: ' + error.message;
+                    document.getElementById('message').className = 'error';
                 });
             });
         });

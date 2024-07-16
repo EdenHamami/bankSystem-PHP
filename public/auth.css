@@ -1,24 +1,13 @@
 /* auth.css */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #6A82FB, #FC5C7D);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    color: #333;
-}
-
 .auth-container {
     background: #fff;
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
     width: 100%;
     max-width: 400px;
-    text-align: center;
 }
 
 .auth-container h2 {
