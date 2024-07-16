@@ -25,3 +25,6 @@ RewriteRule ^user/login/?$ controllers/UserController.php?action=login [QSA,L]
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+
+
