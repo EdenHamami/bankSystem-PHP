@@ -19,8 +19,9 @@ if (!$account_id) {
 <html>
 <head>
     <title>Account Details</title>
-    <link rel="stylesheet" type="text/css" href="../public/styles.css">
     <link rel="stylesheet" type="text/css" href="../public/account_details.css">
+    <link rel="stylesheet" type="text/css" href="../public/styles.css">
+
 </head>
 <body>
     <div class="container">
@@ -65,7 +66,7 @@ if (!$account_id) {
                     if (Array.isArray(transactions) && transactions.length > 0) {
                         transactions.forEach(transaction => {
                             const row = document.createElement('tr');
-                            const directionClass = transaction.direction === 'in' ? 'incoming' : 'outgoing';
+                            const directionClass = transaction.direction === 'IN' ? 'incoming' : 'outgoing';
                             row.innerHTML = `
                                 <td>${transaction.date}</td>
                                 <td class="${directionClass}">${transaction.amount}</td>

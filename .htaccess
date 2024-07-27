@@ -1,28 +1,10 @@
-# הפעלת מודול mod_rewrite
+# הפעלת mod_rewrite
 RewriteEngine On
 
 # הגדרת בסיס URL
 RewriteBase /BankingApp/
 
-# ניתוב בקשות ל-index.php
+# ניתוב כל הבקשות ל-public/index.php אם הקובץ או התיקייה לא קיימים
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
-
-# ניתוב ל-AccountController לפי פעולות
-RewriteRule ^accounts/?$ controllers/AccountController.php?action=getByUserId [QSA,L]
-RewriteRule ^account/create/?$ controllers/AccountController.php?action=create [QSA,L]
-RewriteRule ^account/(\d+)/?$ controllers/AccountController.php?action=getById&account_id=$1 [QSA,L]
-
-# ניתוב ל-UserController לפי פעולות
-RewriteRule ^login/?$ controllers/UserController.php?action=showLogin [QSA,L]
-RewriteRule ^register/?$ controllers/UserController.php?action=showRegister [QSA,L]
-RewriteRule ^user/create/?$ controllers/UserController.php?action=register [QSA,L]
-RewriteRule ^user/login/?$ controllers/UserController.php?action=login [QSA,L]
-
-# מניעת גישה לקבצים מסוימים ישירות דרך הדפדפן
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|bak)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
+RewriteRule ^(.*)$ public/index.php [QSA,L]

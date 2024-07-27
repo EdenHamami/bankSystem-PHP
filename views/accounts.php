@@ -13,6 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <title>Accounts</title>
     <link rel="stylesheet" type="text/css" href="../public/styles.css">
+    <link rel="stylesheet" type="text/css" href="../public/accounts.css">
 </head>
 <body>
     <div class="container">
@@ -25,6 +26,7 @@ if (!isset($_SESSION['user_id'])) {
                 <?php echo htmlspecialchars($_GET['error']); ?>
             </div>
         <?php endif; ?>
+        <a href="dashboard.php">Back to Dashboard</a>
     </div>
 
     <script>

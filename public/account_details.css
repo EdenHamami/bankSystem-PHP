@@ -73,11 +73,12 @@
 .back-link {
     display: inline-block;
     margin-top: 20px;
-    color: #6A82FB;
+    /* color: #6A82FB; */
+    color: white;
     text-decoration: none;
     transition: color 0.3s;
 }
 
 .back-link:hover {
-    color: #FC5C7D;
+    color: white;
 }

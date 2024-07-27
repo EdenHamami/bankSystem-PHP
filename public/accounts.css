@@ -7,8 +7,8 @@ ul#accounts-list {
 }
 
 ul#accounts-list li {
-    background: #f8f8f8;
-    border: 1px solid #ddd;
+    background: #f8f8f8 ;
+    border: 1px solid #ddd ;
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 15px;
@@ -21,9 +21,9 @@ ul#accounts-list li:hover {
 }
 
 ul#accounts-list a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
+    text-decoration: none !important;
+    color: #333 !important;
+    font-weight: bold !important;
     display: block;
 }
 
