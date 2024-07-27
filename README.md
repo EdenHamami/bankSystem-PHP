@@ -10,7 +10,8 @@ This project is a banking system developed using PHP and SQL, adhering to the Mo
 * Performance Optimization: Uses SQL indexes to speed up data retrieval processes, making the system efficient even with large volumes of data.
 * Session Management: Leverages PHP sessions to maintain user state and session information securely.
 * Responsive UI: The system uses a dynamic MVC architecture to separate concerns and enhance user experience.
-Technologies Used
+
+## Technologies Used
 * PHP: Server-side scripting language used for backend development.
 * MySQL: Relational database management system used for storing all application data.
 * HTML/CSS: Frontend technologies used for designing the user interface.
